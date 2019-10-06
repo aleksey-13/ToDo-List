@@ -1,0 +1,11 @@
+.item-add-form {
+    display: flex;
+    justify-content: center;
+    padding-top: 1rem; 
+}
+
+.todo-input {
+    width: 100%;
+    float: left;
+    margin-right: .5rem; 
+}
