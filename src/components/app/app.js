@@ -15,7 +15,8 @@ export default class App extends Component {
         this.createTodoItem('Drink Coffe'),
         this.createTodoItem('Make Awesome App'),
         this.createTodoItem('Have a lunch')
-      ]
+      ],
+      term: ''
     };
 
     newState = [...this.state.todoData];
@@ -52,7 +53,7 @@ export default class App extends Component {
   addItem = (text) => {
 
     this.setState(({ todoData }) => {
-      const newData = [...todoData];
+      const newData = [...this.newState];
       newData.push(this.createTodoItem(text));
       this.newState = [...newData];
       return {
@@ -110,36 +111,33 @@ export default class App extends Component {
     });
   };
 
-  onSearch = (text) => {
-    this.setState(() => {
-      const data = [...this.newState];
-      const label = text.trim();
-      if (label !== '') {
-        this.newState.forEach((el, index) => {
-          if (el.label.toLowerCase().search(label.toLowerCase()) === -1) {
-            data.splice(index, 1);
-          }
-          console.log(label)
-        });
-      };
-      return {
-        todoData: data
-      }
-    });
+  search = (items, term) => {
+    if (term.length === 0) return items;
+
+    return items.filter((item) => {
+      return item.label.toLowerCase().indexOf(term.toLowerCase()) > -1;
+    })
+  
+  };
+
+  onSearchChange = (term) => {
+    this.setState({ term });
   };
 
   render() {
-    const { todoData } = this.state;
+    const { todoData, term } = this.state;
 
-    const doneItems = todoData.filter((el) => el.done === true).length;
+    const visibleItems = this.search(this.newState, term)
+
+    const doneItems = this.newState.filter((el) => el.done === true).length;
     
-    const todoItems = todoData.length - doneItems;
+    const todoItems = this.newState.length - doneItems;
     
     return (
       <div className="todo-app">
         <AppHeader toDo={todoItems} done={doneItems} />
         <div className="top-panel d-flex">
-          <SearchPanel onSearch={this.onSearch}/>
+          <SearchPanel onSearchChange={this.onSearchChange}/>
           <ItemStatusFilter 
             allItems={this.allItems}
             activeItems={this.activeItems}
@@ -147,7 +145,7 @@ export default class App extends Component {
         </div>
 
         <TodoList 
-          todos={todoData}
+          todos={visibleItems}
           onDeleted={this.deleteItem}
           onToggleImportant={this.onToggleImportant}
           onToggleDone={this.onToggleDone}

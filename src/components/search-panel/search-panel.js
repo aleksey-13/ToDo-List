@@ -5,15 +5,13 @@ import './search-panel.css';
 export default class ItemAddForm extends Component {
 
   state = {
-    label: ''
+    term: ''
   };
 
-  onLabelChange = (e) => {
-    //console.log(e.target.value)
-      this.setState({
-        label: e.target.value
-      })
-      this.props.onSearch(e.target.value);
+  onSearchChange = (e) => {
+    const term = e.target.value;
+    this.setState({ term })
+    this.props.onSearchChange(term);
   };
 
   render() {
@@ -21,8 +19,8 @@ export default class ItemAddForm extends Component {
       <input type="text"
             className="form-control search-input"
             placeholder="type to search" 
-            onChange={this.onLabelChange}
-            value={this.state.label}
+            onChange={this.onSearchChange}
+            value={this.state.term}
             />
       );
     };
